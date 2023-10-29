@@ -7,7 +7,7 @@ Utilizaremos el índice de Precios de USA (Consumer Price Index for All Urban Co
 Para estimar y hacer infereencia sobre la serie necestiamos quee la serie de tiempo sea estacionaria. Ante un análisis grafico se puede observar con intuición acerca de la estacionariedad en sentido débil
 
 
-Las condiciones estadíssticas que buscamos es que $E[Y_t]$ y $VAR(y_t)$ sean constantes a lo largo del tiempo
+Las condiciones estadísticas que buscamos es que $E[Y_t]$ y $VAR(y_t)$ sean constantes a lo largo del tiempo
 
 Empezamos linkeando la base
 
