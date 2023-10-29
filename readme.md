@@ -1,9 +1,13 @@
 # Práctica I - Series de tiempo 
 
-Utilizaremos el Indice de Precios de USA (Consumer Price Index for All Urban Consumers ),vale destacar que trabajaremos con la inflación mensual.
+Utilizaremos el índice de Precios de USA (Consumer Price Index for All Urban Consumers ), vale destacar que trabajaremos con la inflación mensual
 
-Para estimar y hacer infereencia sobre la serie necestiamos quee la serie de tiempo sea estacionaria. Ante un analisis grafico se puede observar una intuicion acerca de la estacionariedad en sentido debil.
-Las condiciones estadisticas que buscamos es que $E[Y_t]$ y $VAR(y_t)$ sean constantes a lo largo del tiempo.
+
+
+Para estimar y hacer infereencia sobre la serie necestiamos quee la serie de tiempo sea estacionaria. Ante un análisis grafico se puede observar con intuición acerca de la estacionariedad en sentido débil
+
+
+Las condiciones estadíssticas que buscamos es que $E[Y_t]$ y $VAR(y_t)$ sean constantes a lo largo del tiempo
 
 Empezamos linkeando la base
 
@@ -19,7 +23,8 @@ tsset Fecha,monthly
 
 # Análisis de estacionariedad
 
-Es recomendable trabajar con series logaritmicas, nos permite reducir la heterocedasticidad y suavizar la serie
+
+Es recomendable trabajar con series logarítmicas, nos permite reducir la heterocedasticidad y suavizar la serie
 
 
 ```
@@ -40,24 +45,26 @@ graph combine IPC logIPC , col(1) iscale(1)
 <img width="1353" alt="image" src="https://github.com/lucassebaord29/PracticaEconMontesRojas/assets/67765423/bcf72913-a5b2-4ce7-8cb5-6154d58587e5">
 
 
-Realizando la diferencia logaritmica del IPC aplicando el operador diferencia $\Delta y_t=y_t - y_{t-1}$. El comando es el siguiente en STATA:
+Realizando la diferencia logarítmica del IPC aplicando el operador diferencia $\Delta y_t=y_t - y_{t-1}$. El comando es el siguiente en STATA:
 
 ```
 d.logIPC
 ```
+
 Al aplicar diferencias sobre la serie de IPC
+
 
 $$ \Delta ln(IPC) = ln(IPC_t) - ln(IPC_{t-1})$$
 
 
-Generamos una variable que representa la aproximación lineal de la *inflación mensual*. 
+Generamos una variable que representa la aproximación lineal de la **inflación mensual**. 
 
 ```
 gen dlogIPC = d.logIPC
 label variable dlogIPC "Inflación mensual"
 ```
 
-Graficamos con el objetivo de intuir si existe tendencia (crece a lo largo de $t$) o tiene picos (comportamiento estacional).
+Graficamos con el objetivo de intuir si existe tendencia (crece a lo largo de $t$) o tiene picos (comportamiento estacional)
 
 ```
 tsline dlogIPC
@@ -68,7 +75,7 @@ tsline dlogIPC
 
 ## Análisis estadístico de la serie
 
-### 1) Aplicamos filtro de Hodrick - Prescott, con el objetivo de conocer la descomposicion de la serie, la tendencia y el ciclo
+### 1) Aplicamos filtro de Hodrick - Prescott, con el objetivo de conocer la descomposición de la serie, la tendencia y el ciclo
 
 
 ```
@@ -94,12 +101,12 @@ Gráficamente:
 
 <img width="1354" alt="image" src="https://github.com/lucassebaord29/PracticaEconMontesRojas/assets/67765423/0d9a2b51-fe2b-4038-9ad2-4f37bc5f37de">
 
-### 2) Aproximacion de observacion de tendencia y estacionalidad
+### 2) Aproximación de observación de tendencia y estacionalidad
 
 Buscamos un polinomio de grado $n$, que se asemeje mas a nuestro modelo
 
 ```
-* Primera aproximacion de observacion de tendencia y estacionalidad
+* Primera aproximación de observación de tendencia y estacionalidad
 
 *** Tendencia
 
@@ -131,21 +138,22 @@ tsline ciclo_hp tendencia_hp
 *********************************************************************************
 *observar la tendencia es simil a traves del filtro de hp y por otro lado con el ajuste polinomico
 
-<img width="1355" alt="image" src="https://github.com/lucassebaord29/PracticaEconMontesRojas/assets/67765423/844f4bd6-6621-4444-a38a-3691d7a48265">
 
 
 ```
+<img width="1355" alt="image" src="https://github.com/lucassebaord29/PracticaEconMontesRojas/assets/67765423/844f4bd6-6621-4444-a38a-3691d7a48265">
 
+\
 **Podemos conjeturar que un polinomio de grado 2 ajusta correctamente**
 
-
+\
 Nuestra salida en STATA es la siguiente:
 
 
 <img width="640" alt="image" src="https://github.com/lucassebaord29/PracticaEconMontesRojas/assets/67765423/b3525bf0-45ca-48dc-b4ab-752f1bea7565">
 
 \
-Realizamos los valores predichos para obtener **tendencia** y por otro lado a traves de los residuales de la regresion obtenemos la serie sin tendencia.
+Realizamos los valores predichos para obtener **tendencia** y por otro lado a través de los residuales de la regresión obtenemos la serie sin tendencia.
 
 ```
 reg dlogIPC Tiempo Tiempo2 
@@ -155,7 +163,7 @@ label variable CLEAN_INF "Inflación sin tendencia"
 
 ```
 
-Para el analisis de estacionalidad creamos $Q-1$ Dummy con los meses respectivos para descomponener el efecto mensual. El analisis se realiza sobre la serie sin tendencia
+Para el análisis de estacionalidad creamos $Q-1$ Dummy con los meses respectivos para descomponener el efecto mensual. El análisis se realiza sobre la serie sin tendencia
 
 ```
 ** Ahora tiramos una regresión de la serie limpia sin tendencia vs i.Mes para chequear estacionalidad
@@ -194,13 +202,13 @@ tsline CLEAN_INF2 dlogIPC
 
 
 ## 3) Contraste de Dickey Fuller
-Anteriormente observamos que la serie con la que estamos trabajando presenta un **componente tendencial** por ende la serie **no puede ser estacionaria**.
+Anteriormente observamos que la serie con la que estamos trabajando presenta un **componente tendencial** por ende la serie **no puede ser estacionaria**
 
 Aplicamos este test con el objetivo de buscar **Raices unitarias**
 
 
 ### 1° Test simple de Dickey-Fuller
-Analizamos si la serie presenta estacionariedad a traves del test de Dickey - Fuller, el objetivo de este test es testear si se presenta raíz unitaria. 
+Analizamos si la serie presenta estacionariedad a través del test de Dickey - Fuller, el objetivo de este test es testear si se presenta raíz unitaria 
 
 Ejemplo AR(1):
 
@@ -227,7 +235,7 @@ Nuestra salida en STATA es la siguiente:
 
 
 \
-Se presenta Raiz unitaria, ya que no rechazamos la hipotesis nula. Aplicando el operador diferencia nos permite trabajar con un orden de integracion 0 I(0).
+Se presenta Raíz unitaria, ya que no rechazamos la hipótesis nula. Aplicando el operador diferencia nos permite trabajar con un orden de integracion 0 I(0)
 
 ```
 dfuller dlogIPC
@@ -241,13 +249,13 @@ Nuestra salida en STATA es la siguiente:
 
 
 \
-Rechazamos $H_0$, no se presenta raiz unitaria
+Rechazamos $H_0$, no se presenta raíz unitaria
 
 
 
 ### 2° Test de Dickey-Fuller ampliado
 
-Con este comando vemos la cantidad de rezagos optimos en nuestro modelo, optamos por un rezago por criterio Bayesiano
+Con este comando vemos la cantidad de rezagos óptimos en nuestro modelo, optamos por un rezago por criterio Bayesiano
 
 ```
 1) busco cantidad de lags */
@@ -265,7 +273,7 @@ Nuestra salida en STATA es la siguiente:
 
 
 \
-Luego Testeo a traves de estos rezagos en el test:
+Luego testeo a traves de estos rezagos en el test:
 
 
 ```
@@ -285,7 +293,7 @@ Nuestra salida en STATA es la siguiente:
 
 
 \
-Tambien a traves del Test puedo observar la significancia de la tendencia  
+También a través del Test puedo observar la significancia de la tendencia  
 
 
 
@@ -313,7 +321,7 @@ En este caso no es significativo
 ---------
 **arma**
 
-La serie de tiempo depende de una constante + algunos rezagos donde aparece el rezago de la variable independiente + otros rezagos a traves de los shocks
+La serie de tiempo depende de una **constante + algunos rezagos donde aparece el rezago de la variable independiente + otros rezagos a traves de los shocks**
 
 
 Para los MA -> función de autocorrelación. 
@@ -324,7 +332,7 @@ comando
 ac variable
 
 ```
-me calcula los coeficiente que se corresponden con la autocorrelación, los que estan por fuera del intervalo de confianza son estadisticamente significativos
+Calcula los coeficientes que se corresponden con la autocorrelación, los que estan por fuera del intervalo de confianza son estadisticamente significativos
 
 **OBSERVACIÓN: LA AUTOCORRELACION SIRVE COMO FORMA DE ELEGIR LA CANTIDAD DE REZAGOS DE LOS PROMEDIOS MOVILES**
 ```
@@ -346,9 +354,9 @@ pac variable
 ```
 
 --------
-Una aclaración importante es que debemos trabajar sobre nuestra serie estacionaria (Sin tendencia ni estacionalidad).
+Una aclaración importante es que debemos trabajar sobre nuestra serie estacionaria (Sin tendencia ni estacionalidad)
 
-Realizando un **analisis subjetivo** en base a los **gráficos** de la **función de autorcorrelación (AC)** y la **funcion de autocorrelación parcial (PAC)**, nos acercamos a lla cantidad de rezagos de la parte MA y la parte AR del modelo.
+Realizando un **analisis subjetivo** en base a los **gráficos** de la **función de autorcorrelación (AC)** y la **funcion de autocorrelación parcial (PAC)**, nos acercamos a la cantidad de rezagos de la parte MA y la parte AR del modelo.
 
 
 Una primera aproximación es utilizar el siguiente comando:
@@ -374,7 +382,7 @@ graph combine auto partauto
 ```
 
 
-Los graficos son los siguientes:
+Los gráficos son los siguientes:
 
 
 ![image](https://github.com/lucassebaord29/PracticaEconMontesRojas/assets/67765423/087507ce-6be6-4218-96d2-e06cd767d28b)
@@ -383,7 +391,7 @@ Los graficos son los siguientes:
 ¿Que pueden inferir graficamente?
 
 
-Para realizar una analisis mas robusto utilizamos **los critorios de información**, probamos distintos modelos ARMA. A la ora de elegir nos quedamos con el modelo que reporte el **minimo** valor.
+Para realizar una análisis mas robusto utilizamos **los critorios de información**, probamos distintos modelos ARMA. A la hora de elegir nos quedamos con el modelo que reporte el **minimo** valor
 
 ### **ARIMA (1,0,0)**
 
@@ -450,9 +458,11 @@ Para realizar una analisis mas robusto utilizamos **los critorios de informació
 -----------------------------------------------------------------------------
 ```
 
-En base a los criterios de informacion el ARMA(1,1) y MA(1) osn los mejores modelos a utilizar. A fines practicos trabajaremos con los 3 modelos seleccionados para ver diferencias y similitudes.
+En base a los criterios de información el ARMA(1,1) y MA(1) son los mejores modelos a utilizar. A fines prácticos trabajaremos con los 3 modelos seleccionados para ver diferencias y similitudes.
 
-Como siguiente paso verificamos si existe correlacion con los ruidos blancos de nuestros modelos. Corremos en STATA el correlograma de los errores de predicción del modelo AR (2) para los datos de nuestra base de inflación para tener más informacion sobre la elección del modelo además de los criterios de información.
+
+Como siguiente paso verificamos si existe correlación con los ruidos blancos de nuestros modelos. Corremos en STATA el correlograma de los errores de predicción del modelo AR (2) para los datos de nuestra base de inflación para tener más información sobre la elección del modelo además de los criterios de información
+
 
 ```
 arima CLEAN_INF2, arima (2,0,0)
@@ -468,7 +478,7 @@ La salida de STATA es la siguiente:
 
 
 \
-Corremos en STATA el correlograma de los errores de predicción del modelo ARMA (1,1) para los datos de nuestra base de inflación para tener más informacion sobre la elección del modelo además de los criterios de información.
+Corremos en STATA el correlograma de los errores de predicción del modelo ARMA (1,1) para los datos de nuestra base de inflación para tener más información sobre la elección del modelo además de los criterios de información
 
 ```
 arima CLEAN_INF2, arima (1,0,1)
@@ -482,7 +492,7 @@ La salida de STATA es la siguiente:
 ![image](https://github.com/lucassebaord29/PracticaEconMontesRojas/assets/67765423/e3ad44ae-968f-4231-8889-21420c9c133d)
 
 
-Corremos en STATA el correlograma de los errores de predicción del modelo MA (1) para los datos de nuestra base de inflación para tener más informacion sobre la elección del modelo además de los criterios de información.
+Corremos en STATA el correlograma de los errores de predicción del modelo MA (1) para los datos de nuestra base de inflación para tener más información sobre la elección del modelo además de los criterios de información.
 
 
 ```
@@ -538,11 +548,11 @@ tsline inhat20 dlogIPC if Fecha>tm(2022m12) & Fecha<=tm(2023m9)
 tsline inhat20 dlogIPC  if Fecha>tm(2020m12) & Fecha<=tm(2023m9)
 ```
 
-El primer grafico muestra nuestra prediccion a lo largo del año 2023
+El primer gráfico muestra nuestra predicción a lo largo del año 2023
 
 ![image](https://github.com/lucassebaord29/PracticaEconMontesRojas/assets/67765423/d1c909b9-4c5a-42ce-8fbf-5e62bfd035c0)
 
-El segundo grafico muestra nuestro modelo junto con la predicion del año 2023 para el periodo 2021-2023
+El segundo gráfico muestra nuestro modelo junto con la predicción del año 2023 para el período 2021-2023
 
 ![image](https://github.com/lucassebaord29/PracticaEconMontesRojas/assets/67765423/c065c50e-f6ae-4eb4-b4f0-a0333bd88e69)
 
@@ -561,12 +571,12 @@ tsline inhat20_2 dlogIPC if Fecha>tm(2022m12) & Fecha<=tm(2023m9)
 tsline inhat20_2 dlogIPC  if Fecha>tm(2020m12) & Fecha<=tm(2023m9)
 ```
 
-El primer grafico muestra nuestra prediccion a lo largo del año 2023
+El primer gráfico muestra nuestra predicción a lo largo del año 2023
 
 ![image](https://github.com/lucassebaord29/PracticaEconMontesRojas/assets/67765423/2d69141c-99ba-4043-bdba-cfc3ec66b437)
 
 
-El segundo grafico muestra nuestro modelo junto con la predicion del año 2023 para el periodo 2021-2023
+El segundo gráfico muestra nuestro modelo junto con la predicción del año 2023 para el periodo 2021-2023
 
 ![image](https://github.com/lucassebaord29/PracticaEconMontesRojas/assets/67765423/45779042-54e0-41f5-96cc-5d64627e0332)
 
@@ -584,12 +594,12 @@ tsline inhat20_2 dlogIPC if Fecha>tm(2022m12) & Fecha<=tm(2023m9)
 tsline inhat20_2 dlogIPC  if Fecha>tm(2020m12) & Fecha<=tm(2023m9)
 ```
 
-El primer grafico muestra nuestra prediccion a lo largo del año 2023
+El primer gráfico muestra nuestra predicción a lo largo del año 2023
 
 ![image](https://github.com/lucassebaord29/PracticaEconMontesRojas/assets/67765423/bd997b5b-0e13-4cb4-bf3d-c06f15d2786b)
 
 
-El segundo grafico muestra nuestro modelo junto con la predicion del año 2023 para el periodo 2021-2023
+El segundo gráfico muestra nuestro modelo junto con la predicción del año 2023 para el periodo 2021-2023
 
 ![image](https://github.com/lucassebaord29/PracticaEconMontesRojas/assets/67765423/3d00234f-ef12-4036-8ea1-1e2814593a1e)
 
